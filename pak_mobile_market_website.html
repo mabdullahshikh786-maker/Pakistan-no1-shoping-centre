@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PAK Mobile Market - Buy & Sell Mobiles & Tablets in Pakistan</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        pakGreen: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#064e3b',
+                        },
+                        jazzRed: '#e11b22',
+                        easypaisaGreen: '#00a859',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom animations & fine touches */
+        .badge-pta { background-color: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+        .badge-non-pta { background-color: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
+        .badge-warranty { background-color: #e0f2fe; color: #0369a1; border: 1px solid #7dd3fc; }
+        
+        .tab-active { border-bottom: 3px solid #15803d; color: #15803d; font-weight: 700; }
+        
+        /* Smooth Drawer Transitions */
+        .drawer-overlay { transition: opacity 0.3s ease-in-out; }
+        .drawer-content { transition: transform 0.3s ease-in-out; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen">
+
+    <!-- TOP ANNOUNCEMENT BAR -->
+    <div class="bg-pakGreen-900 text-white text-xs sm:text-sm py-2 px-4 text-center font-medium flex justify-between items-center max-w-full">
+        <div class="hidden sm:flex items-center space-x-4">
+            <span><i class="fa-solid fa-shield-halved text-emerald-400 mr-1"></i> 100% PTA Approved & Verified Devices</span>
+            <span><i class="fa-solid fa-truck-fast text-emerald-400 mr-1"></i> Free Shipping Nationwide</span>
+        </div>
+        <div class="mx-auto sm:mx-0 font-semibold">
+            🇵🇰 Pakistan's #1 Trusted Mobile Buy & Sell Store | Helpline: 0300-1234567
+        </div>
+        <div class="hidden md:flex items-center space-x-3">
+            <span class="text-xs bg-emerald-800 px-2 py-0.5 rounded text-emerald-200">PKR Rs.</span>
+        </div>
+    </div>
+
+    <!-- MAIN HEADER & NAVIGATION -->
+    <header class="bg-white shadow-sm sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20 space-x-4">
+                
+                <!-- Brand Logo -->
+                <a href="#" onclick="showSection('shop')" class="flex items-center space-x-2 flex-shrink-0">
+                    <div class="bg-pakGreen-800 text-white p-2.5 rounded-xl shadow-md flex items-center justify-center">
+                        <i class="fa-solid fa-mobile-screen-button text-2xl"></i>
+                    </div>
+                    <div>
+                        <span class="text-2xl font-black tracking-tight text-gray-900 leading-none block">
+                            PAK<span class="text-pakGreen-700">MOBILE</span>
+                        </span>
+                        <span class="text-xs font-semibold text-gray-500 tracking-wider uppercase block">Market.pk</span>
+                    </div>
+                </a>
+
+                <!-- Search Bar -->
+                <div class="flex-1 max-w-xl mx-4 hidden md:block">
+                    <div class="relative">
+                        <input type="text" id="searchInput" onkeyup="handleSearch()" placeholder="Search iPhone 15, Samsung S24, Vivo, iPad Air..." 
+                            class="w-full pl-10 pr-4 py-2.5 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-pakGreen-600 focus:border-transparent text-sm bg-gray-50">
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Header Actions -->
+                <div class="flex items-center space-x-3 sm:space-x-4">
+                    <!-- Sell Button -->
+                    <button onclick="scrollToSellSection()" class="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-bold px-4 py-2.5 rounded-xl shadow-sm text-sm flex items-center space-x-2 transition transform active:scale-95">
+                        <i class="fa-solid fa-arrows-rotate"></i>
+                        <span>Sell / Trade-In</span>
+                    </button>
+
+                    <!-- Cart Icon Button -->
+                    <button onclick="toggleCartDrawer(true)" class="relative p-2.5 text-gray-700 hover:text-pakGreen-800 hover:bg-emerald-50 rounded-xl transition">
+                        <i class="fa-solid fa-cart-shopping text-xl"></i>
+                        <span id="cartCount" class="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-sm">0</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Search Bar (Visible on mobile) -->
+            <div class="pb-3 md:hidden">
+                <div class="relative">
+                    <input type="text" id="searchInputMobile" onkeyup="handleSearchMobile()" placeholder="Search mobiles, tablets..." 
+                        class="w-full pl-10 pr-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-pakGreen-600 text-sm bg-gray-50">
+                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Category Bar -->
+        <div class="bg-gray-100 border-t border-b border-gray-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center space-x-2 sm:space-x-6 overflow-x-auto py-2.5 no-scrollbar text-sm font-medium text-gray-700">
+                    <button onclick="filterByBrand('all')" class="brand-filter-btn px-3 py-1 rounded-lg bg-pakGreen-800 text-white font-semibold flex-shrink-0">All Devices</button>
+                    <button onclick="filterByBrand('Apple')" class="brand-filter-btn px-3 py-1 rounded-lg hover:bg-gray-200 flex-shrink-0 flex items-center space-x-1"><i class="fa-brands fa-apple"></i><span>Apple</span></button>
+                    <button onclick="filterByBrand('Samsung')" class="brand-filter-btn px-3 py-1 rounded-lg hover:bg-gray-200 flex-shrink-0">Samsung</button>
+                    <button onclick="filterByBrand('OPPO')" class="brand-filter-btn px-3 py-1 rounded-lg hover:bg-gray-200 flex-shrink-0">OPPO</button>
+                    <button onclick="filterByBrand('Vivo')" class="brand-filter-btn px-3 py-1 rounded-lg hover:bg-gray-200 flex-shrink-0">Vivo</button>
+                    <button onclick="filterByBrand('Xiaomi')" class="brand-filter-btn px-3 py-1 rounded-lg hover:bg-gray-200 flex-shrink-0">Xiaomi</button>
+                    <button onclick="filterByCategory('Tablet')" class="brand-filter-btn px-3 py-1 rounded-lg hover:bg-gray-200 flex-shrink-0 flex items-center space-x-1 text-pakGreen-800 font-semibold"><i class="fa-solid fa-tablet-screen-button"></i><span>iPads & Tablets</span></button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO BANNER -->
+    <section class="bg-gradient-to-r from-pakGreen-900 via-pakGreen-800 to-emerald-900 text-white py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-center relative z-10">
+            <div>
+                <span class="bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-xs px-3 py-1 rounded-full font-semibold uppercase tracking-wider mb-4 inline-block">
+                    ⚡ Verified Mobile Marketplace in Pakistan
+                </span>
+                <h1 class="text-3xl sm:text-5xl font-extrabold leading-tight mb-4">
+                    Buy Original Phones or <span class="text-amber-400">Sell Old Devices</span> Instantly!
+                </h1>
+                <p class="text-gray-200 text-base sm:text-lg mb-6">
+                    100% PTA Approved smartphones, tablets & iPads with check warranty. Instant cash offer & door-step pickup available in Karachi, Lahore, Islamabad & major cities.
+                </p>
+                <div class="flex flex-wrap gap-3">
+                    <a href="#shop-section" class="bg-white text-pakGreen-900 hover:bg-gray-100 font-bold px-6 py-3 rounded-xl shadow-lg transition">
+                        Browse Store
+                    </a>
+                    <button onclick="scrollToSellSection()" class="bg-amber-500 hover:bg-amber-600 text-gray-900 font-bold px-6 py-3 rounded-xl shadow-lg transition">
+                        Get Trade-In Valuation
+                    </button>
+                </div>
+            </div>
+
+            <!-- Banner Feature Cards -->
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/10">
+                    <i class="fa-solid fa-check-double text-amber-400 text-2xl mb-2"></i>
+                    <h3 class="font-bold text-lg">PTA Status Check</h3>
+                    <p class="text-xs text-gray-300">Guaranteed PTA official approval badge on all devices.</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/10">
+                    <i class="fa-solid fa-money-bill-wave text-emerald-400 text-2xl mb-2"></i>
+                    <h3 class="font-bold text-lg">Instant Cash</h3>
+                    <p class="text-xs text-gray-300">Sell your mobile via JazzCash, EasyPaisa or Bank Transfer.</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/10">
+                    <i class="fa-solid fa-shield-cat text-blue-400 text-2xl mb-2"></i>
+                    <h3 class="font-bold text-lg">7 Days Warranty</h3>
+                    <p class="text-xs text-gray-300">Replacement warranty for full peace of mind.</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/10">
+                    <i class="fa-solid fa-truck-ramp-box text-purple-400 text-2xl mb-2"></i>
+                    <h3 class="font-bold text-lg">Express Delivery</h3>
+                    <p class="text-xs text-gray-300">TCS / Leopard COD delivery across 200+ cities.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MAIN SHOP & TRADE-IN CONTENT -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+
+        <!-- SELL / TRADE-IN VALUATION SECTION -->
+        <section id="sell-section" class="mb-14 bg-white rounded-3xl shadow-xl border border-gray-200 overflow-hidden">
+            <div class="bg-gradient-to-r from-amber-500 to-orange-600 p-6 text-white">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-white/20 p-3 rounded-2xl">
+                        <i class="fa-solid fa-calculator text-2xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-extrabold">Instant Trade-In & Valuation Calculator</h2>
+                        <p class="text-amber-100 text-sm">Select your phone details below to get an instant cash offer from PAK Mobile Market</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-6 sm:p-8">
+                <form id="valuationForm" onsubmit="calculateValuation(event)" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    
+                    <!-- Select Brand -->
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">1. Select Brand</label>
+                        <select id="valBrand" onchange="updateModelOptions()" class="w-full p-3 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-sm font-medium">
+                            <option value="">-- Choose Brand --</option>
+                            <option value="Apple">Apple iPhone / iPad</option>
+                            <option value="Samsung">Samsung</option>
+                            <option value="OPPO">OPPO</option>
+                            <option value="Vivo">Vivo</option>
+                            <option value="Xiaomi">Xiaomi / Redmi</option>
+                        </select>
+                    </div>
+
+                    <!-- Select Model -->
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">2. Select Model</label>
+                        <select id="valModel" class="w-full p-3 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-sm font-medium">
+                            <option value="">-- Select Brand First --</option>
+                        </select>
+                    </div>
+
+                    <!-- Condition -->
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">3. Physical Condition</label>
+                        <select id="valCondition" class="w-full p-3 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-sm font-medium">
+                            <option value="flawless">Flawless / 10/10 (No scratches)</option>
+                            <option value="minor">Good / 9/10 (Minor Scratches)</option>
+                            <option value="cracked">Screen Cracked / Heavy Usage</option>
+                        </select>
+                    </div>
+
+                    <!-- PTA Status -->
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">4. PTA Status</label>
+                        <select id="valPta" class="w-full p-3 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-sm font-medium">
+                            <option value="pta">Official PTA Approved</option>
+                            <option value="non-pta">Non-PTA / JV Soft</option>
+                        </select>
+                    </div>
+
+                    <!-- Accessories Checkboxes -->
+                    <div class="md:col-span-2 lg:col-span-4 bg-gray-50 p-4 rounded-2xl border border-gray-200">
+                        <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Included Accessories & Details:</label>
+                        <div class="flex flex-wrap gap-4 text-sm font-medium">
+                            <label class="inline-flex items-center space-x-2 cursor-pointer">
+                                <input type="checkbox" id="accBox" class="rounded text-amber-600 focus:ring-amber-500 h-4 w-4">
+                                <span>Original Box Included</span>
+                            </label>
+                            <label class="inline-flex items-center space-x-2 cursor-pointer">
+                                <input type="checkbox" id="accCharger" class="rounded text-amber-600 focus:ring-amber-500 h-4 w-4">
+                                <span>Original Charger</span>
+                            </label>
+                            <label class="inline-flex items-center space-x-2 cursor-pointer">
+                                <input type="checkbox" id="accBill" class="rounded text-amber-600 focus:ring-amber-500 h-4 w-4">
+                                <span>Original Purchase Invoice / Warranty Card</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="md:col-span-2 lg:col-span-4 flex justify-end">
+                        <button type="submit" class="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-gray-900 font-extrabold px-8 py-3.5 rounded-xl shadow-md transition flex items-center justify-center space-x-2 text-base">
+                            <i class="fa-solid fa-calculator"></i>
+                            <span>Calculate Valuation</span>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Valuation Result Box -->
+                <div id="valuationResult" class="hidden mt-6 p-6 bg-amber-50 border-2 border-amber-300 rounded-2xl text-gray-800">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                        <div>
+                            <span class="text-xs font-bold text-amber-800 uppercase tracking-wider block">Estimated Cash Offer</span>
+                            <div id="offerPrice" class="text-3xl font-black text-amber-900">Rs. 0</div>
+                            <p class="text-xs text-gray-600 mt-1">*Final price subject to physical inspection at door-step pickup or local store.</p>
+                        </div>
+                        <div class="flex flex-col sm:flex-row gap-3">
+                            <button onclick="submitSellQuote()" class="bg-pakGreen-800 hover:bg-pakGreen-900 text-white font-bold px-6 py-3 rounded-xl shadow transition text-sm">
+                                <i class="fa-solid fa-hand-holding-dollar mr-1"></i> Accept & Schedule Pickup
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- STORE / BROWSE SECTION -->
+        <section id="shop-section">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                <div>
+                    <h2 class="text-2xl font-black text-gray-900">Available Mobiles & Tablets</h2>
+                    <p class="text-sm text-gray-500">All devices tested & verified by PAK Mobile Market team</p>
+                </div>
+
+                <!-- Active Filters & Controls -->
+                <div class="flex flex-wrap items-center gap-2">
+                    <select id="sortBy" onchange="applyFilters()" class="text-xs font-semibold bg-white border border-gray-300 rounded-lg p-2.5 shadow-sm focus:outline-none">
+                        <option value="default">Sort: Featured</option>
+                        <option value="low">Price: Low to High</option>
+                        <option value="high">Price: High to Low</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Layout: Sidebar Filters + Product Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                
+                <!-- SIDEBAR FILTERS -->
+                <aside class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm h-fit space-y-6">
+                    <div class="flex items-center justify-between pb-3 border-b border-gray-200">
+                        <h3 class="font-bold text-gray-900 text-base"><i class="fa-solid fa-filter text-pakGreen-700 mr-2"></i> Filters</h3>
+                        <button onclick="resetFilters()" class="text-xs font-semibold text-pakGreen-700 hover:underline">Reset All</button>
+                    </div>
+
+                    <!-- Category Filter -->
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-gray-500 mb-2">Category</label>
+                        <div class="space-y-2 text-sm">
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" name="catFilter" value="all" checked onchange="applyFilters()" class="text-pakGreen-700 focus:ring-pakGreen-600">
+                                <span>All Devices</span>
+                            </label>
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" name="catFilter" value="Mobile" onchange="applyFilters()" class="text-pakGreen-700 focus:ring-pakGreen-600">
+                                <span>Smartphones</span>
+                            </label>
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" name="catFilter" value="Tablet" onchange="applyFilters()" class="text-pakGreen-700 focus:ring-pakGreen-600">
+                                <span>Tablets & iPads</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- PTA Status Filter -->
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-gray-500 mb-2">PTA Approval Status</label>
+                        <div class="space-y-2 text-sm">
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="checkbox" value="PTA Approved" class="ptaFilter rounded text-pakGreen-700 focus:ring-pakGreen-600" onchange="applyFilters()">
+                                <span>PTA Approved</span>
+                            </label>
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="checkbox" value="Official Warranty" class="ptaFilter rounded text-pakGreen-700 focus:ring-pakGreen-600" onchange="applyFilters()">
+                                <span>Official Warranty</span>
+                            </label>
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="checkbox" value="Non-PTA" class="ptaFilter rounded text-pakGreen-700 focus:ring-pakGreen-600" onchange="applyFilters()">
+                                <span>Non-PTA / JV</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Price Filter Range -->
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-gray-500 mb-2">Max Price (PKR)</label>
+                        <input type="range" id="priceRange" min="30000" max="600000" step="10000" value="600000" oninput="updatePriceLabel(this.value)" onchange="applyFilters()" class="w-full accent-pakGreen-700">
+                        <div class="flex justify-between text-xs font-bold text-gray-600 mt-1">
+                            <span>30,000</span>
+                            <span id="priceValue" class="text-pakGreen-800">600,000 PKR</span>
+                        </div>
+                    </div>
+
+                    <!-- Condition Filter -->
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-gray-500 mb-2">Condition</label>
+                        <div class="space-y-2 text-sm">
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="checkbox" value="Brand New" class="condFilter rounded text-pakGreen-700" onchange="applyFilters()">
+                                <span>Brand New (Pin Pack)</span>
+                            </label>
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="checkbox" value="Refurbished" class="condFilter rounded text-pakGreen-700" onchange="applyFilters()">
+                                <span>Refurbished Grade A</span>
+                            </label>
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="checkbox" value="Used" class="condFilter rounded text-pakGreen-700" onchange="applyFilters()">
+                                <span>Used (Slight Signs)</span>
+                            </label>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- PRODUCT GRID -->
+                <div class="lg:col-span-3">
+                    <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Products will be rendered here via JS -->
+                    </div>
+
+                    <!-- Empty state -->
+                    <div id="noProducts" class="hidden text-center py-16 bg-white rounded-2xl border border-dashed border-gray-300">
+                        <i class="fa-solid fa-mobile-retro text-4xl text-gray-300 mb-3"></i>
+                        <h3 class="font-bold text-gray-700 text-lg">No Devices Match Your Filter</h3>
+                        <p class="text-sm text-gray-500">Try adjusting your filters or price range to find items.</p>
+                        <button onclick="resetFilters()" class="mt-4 px-4 py-2 bg-pakGreen-800 text-white font-semibold rounded-lg text-sm">Reset Filters</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- SHOPPING CART DRAWER (Slide-over) -->
+    <div id="cartDrawer" class="fixed inset-0 z-50 overflow-hidden hidden">
+        <!-- Backdrop overlay -->
+        <div onclick="toggleCartDrawer(false)" class="absolute inset-0 bg-black/50 backdrop-blur-sm drawer-overlay"></div>
+
+        <div class="fixed inset-y-0 right-0 max-w-full flex pl-10">
+            <div class="w-screen max-w-md bg-white shadow-2xl flex flex-col justify-between">
+                
+                <!-- Drawer Header -->
+                <div class="p-6 bg-pakGreen-900 text-white flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-bag-shopping text-xl text-emerald-400"></i>
+                        <h2 class="text-lg font-bold">Your Shopping Cart</h2>
+                    </div>
+                    <button onclick="toggleCartDrawer(false)" class="text-gray-300 hover:text-white p-1">
+                        <i class="fa-solid fa-xmark text-xl"></i>
+                    </button>
+                </div>
+
+                <!-- Cart Items List -->
+                <div id="cartItemsContainer" class="p-6 overflow-y-auto flex-1 divide-y divide-gray-200">
+                    <!-- Dynamic cart items JS -->
+                </div>
+
+                <!-- Cart Footer / Summary -->
+                <div class="p-6 bg-gray-50 border-t border-gray-200 space-y-4">
+                    <div class="space-y-1.5 text-sm">
+                        <div class="flex justify-between text-gray-600">
+                            <span>Subtotal</span>
+                            <span id="cartSubtotal" class="font-bold text-gray-900">Rs. 0</span>
+                        </div>
+                        <div class="flex justify-between text-gray-600">
+                            <span>Shipping nationwide</span>
+                            <span class="text-emerald-700 font-bold">FREE</span>
+                        </div>
+                        <div class="flex justify-between text-base font-black text-gray-900 pt-2 border-t border-gray-300">
+                            <span>Total Payable</span>
+                            <span id="cartTotal" class="text-pakGreen-800">Rs. 0</span>
+                        </div>
+                    </div>
+
+                    <button onclick="openCheckoutModal()" id="checkoutBtn" disabled class="w-full bg-pakGreen-800 hover:bg-pakGreen-900 text-white font-bold py-3.5 rounded-xl shadow-lg transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2">
+                        <span>Proceed to Checkout</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LOCAL PAKISTANI CHECKOUT MODAL -->
+    <div id="checkoutModal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl relative my-8">
+            <button onclick="closeCheckoutModal()" class="absolute top-5 right-5 text-gray-400 hover:text-gray-600 text-2xl">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="mb-6">
+                <h2 class="text-2xl font-black text-gray-900">Complete Your Order</h2>
+                <p class="text-xs text-gray-500">Provide shipping address and select payment method</p>
+            </div>
+
+            <form id="checkoutForm" onsubmit="processOrder(event)" class="space-y-6">
+                
+                <!-- Contact & Shipping Details -->
+                <div class="space-y-4">
+                    <h3 class="text-sm font-bold text-gray-800 border-b pb-1 uppercase tracking-wider">1. Shipping Information</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Full Name *</label>
+                            <input type="text" required placeholder="Ali Khan" class="w-full p-2.5 bg-gray-50 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-pakGreen-600 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Phone / WhatsApp *</label>
+                            <input type="tel" required placeholder="0300 1234567" class="w-full p-2.5 bg-gray-50 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-pakGreen-600 focus:outline-none">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">City *</label>
+                            <select required class="w-full p-2.5 bg-gray-50 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-pakGreen-600 focus:outline-none">
+                                <option value="">Select City</option>
+                                <option value="Karachi">Karachi</option>
+                                <option value="Lahore">Lahore</option>
+                                <option value="Islamabad">Islamabad</option>
+                                <option value="Rawalpindi">Rawalpindi</option>
+                                <option value="Faisalabad">Faisalabad</option>
+                                <option value="Multan">Multan</option>
+                                <option value="Peshawar">Peshawar</option>
+                                <option value="Quetta">Quetta</option>
+                                <option value="Sukkur">Sukkur</option>
+                                <option value="Other">Other City</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Full Street Address *</label>
+                            <input type="text" required placeholder="House #, Street, Area" class="w-full p-2.5 bg-gray-50 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-pakGreen-600 focus:outline-none">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pakistani Payment Gateways Option -->
+                <div class="space-y-3">
+                    <h3 class="text-sm font-bold text-gray-800 border-b pb-1 uppercase tracking-wider">2. Payment Method</h3>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <!-- COD Option -->
+                        <label class="border-2 border-gray-200 rounded-xl p-3 flex items-center justify-between cursor-pointer hover:border-pakGreen-600 has-[:checked]:border-pakGreen-600 has-[:checked]:bg-emerald-50">
+                            <div class="flex items-center space-x-3">
+                                <input type="radio" name="paymentMethod" value="COD" checked class="text-pakGreen-700 focus:ring-pakGreen-600">
+                                <div>
+                                    <span class="block text-xs font-bold text-gray-800">Cash on Delivery (COD)</span>
+                                    <span class="block text-[10px] text-gray-500">Pay when device reaches doorstep</span>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-hand-holding-dollar text-emerald-700 text-lg"></i>
+                        </label>
+
+                        <!-- JazzCash -->
+                        <label class="border-2 border-gray-200 rounded-xl p-3 flex items-center justify-between cursor-pointer hover:border-red-500 has-[:checked]:border-red-600 has-[:checked]:bg-red-50">
+                            <div class="flex items-center space-x-3">
+                                <input type="radio" name="paymentMethod" value="JazzCash" class="text-red-600 focus:ring-red-600">
+                                <div>
+                                    <span class="block text-xs font-bold text-red-700">JazzCash Mobile Wallet</span>
+                                    <span class="block text-[10px] text-gray-500">Instant Wallet Payment</span>
+                                </div>
+                            </div>
+                            <span class="text-xs font-black bg-red-600 text-white px-1.5 py-0.5 rounded">Jazz</span>
+                        </label>
+
+                        <!-- EasyPaisa -->
+                        <label class="border-2 border-gray-200 rounded-xl p-3 flex items-center justify-between cursor-pointer hover:border-emerald-500 has-[:checked]:border-emerald-600 has-[:checked]:bg-emerald-50">
+                            <div class="flex items-center space-x-3">
+                                <input type="radio" name="paymentMethod" value="EasyPaisa" class="text-emerald-600 focus:ring-emerald-600">
+                                <div>
+                                    <span class="block text-xs font-bold text-emerald-700">EasyPaisa Account</span>
+                                    <span class="block text-[10px] text-gray-500">Fast Mobile Account</span>
+                                </div>
+                            </div>
+                            <span class="text-xs font-black bg-emerald-600 text-white px-1.5 py-0.5 rounded">easy</span>
+                        </label>
+
+                        <!-- Raast / Bank Card -->
+                        <label class="border-2 border-gray-200 rounded-xl p-3 flex items-center justify-between cursor-pointer hover:border-blue-500 has-[:checked]:border-blue-600 has-[:checked]:bg-blue-50">
+                            <div class="flex items-center space-x-3">
+                                <input type="radio" name="paymentMethod" value="Raast" class="text-blue-600 focus:ring-blue-600">
+                                <div>
+                                    <span class="block text-xs font-bold text-blue-800">Raast / Debit Card</span>
+                                    <span class="block text-[10px] text-gray-500">Instant Bank Transfer</span>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-building-columns text-blue-700 text-lg"></i>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Order Total Summary -->
+                <div class="bg-gray-100 p-4 rounded-xl flex justify-between items-center text-sm font-bold">
+                    <span>Total Amount:</span>
+                    <span id="modalTotal" class="text-lg text-pakGreen-800">Rs. 0</span>
+                </div>
+
+                <button type="submit" class="w-full bg-pakGreen-800 hover:bg-pakGreen-900 text-white font-extrabold py-3.5 rounded-xl shadow-lg transition">
+                    Confirm Order
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ORDER SUCCESS CONFIRMATION MODAL -->
+    <div id="successModal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl text-center">
+            <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <h2 class="text-2xl font-black text-gray-900 mb-2">Order Confirmed!</h2>
+            <p class="text-sm text-gray-600 mb-6">
+                Thank you for shopping with <span class="font-bold text-pakGreen-800">PAK Mobile Market</span>. Your order ID is <span id="orderIdText" class="font-mono font-bold text-gray-800">#PMM-8921</span>. Our team will contact you via WhatsApp for dispatch.
+            </p>
+            <button onclick="closeSuccessModal()" class="w-full bg-pakGreen-800 hover:bg-pakGreen-900 text-white font-bold py-3 rounded-xl transition">
+                Continue Shopping
+            </button>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-gray-900 text-gray-300 pt-12 pb-8 border-t border-gray-800 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8 mb-8 text-sm">
+            <div>
+                <div class="flex items-center space-x-2 mb-4">
+                    <i class="fa-solid fa-mobile-screen-button text-2xl text-emerald-400"></i>
+                    <span class="text-xl font-black text-white">PAK MOBILE</span>
+                </div>
+                <p class="text-xs text-gray-400 mb-4">
+                    Pakistan's premium marketplace for buying, selling, and trading authentic mobile phones, iPads, and Android tablets.
+                </p>
+                <div class="flex space-x-3 text-lg">
+                    <a href="#" class="text-gray-400 hover:text-white"><i class="fa-brands fa-facebook"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white"><i class="fa-brands fa-whatsapp"></i></a>
+                </div>
+            </div>
+
+            <div>
+                <h4 class="text-white font-bold mb-3 uppercase text-xs tracking-wider">Popular Brands</h4>
+                <ul class="space-y-2 text-xs">
+                    <li><a href="#" onclick="filterByBrand('Apple')" class="hover:text-emerald-400">Apple iPhones & iPads</a></li>
+                    <li><a href="#" onclick="filterByBrand('Samsung')" class="hover:text-emerald-400">Samsung Galaxy Phones</a></li>
+                    <li><a href="#" onclick="filterByBrand('OPPO')" class="hover:text-emerald-400">OPPO Smart Devices</a></li>
+                    <li><a href="#" onclick="filterByBrand('Vivo')" class="hover:text-emerald-400">Vivo Mobile Series</a></li>
+                    <li><a href="#" onclick="filterByBrand('Xiaomi')" class="hover:text-emerald-400">Xiaomi / Redmi Phones</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="text-white font-bold mb-3 uppercase text-xs tracking-wider">Customer Support</h4>
+                <ul class="space-y-2 text-xs">
+                    <li><i class="fa-solid fa-phone mr-1 text-emerald-400"></i> UAN: 0300-1234567</li>
+                    <li><i class="fa-solid fa-envelope mr-1 text-emerald-400"></i> info@pakmobilemarket.pk</li>
+                    <li><i class="fa-solid fa-location-dot mr-1 text-emerald-400"></i> Hafeez Centre, Gulberg III, Lahore</li>
+                    <li><i class="fa-solid fa-clock mr-1 text-emerald-400"></i> Mon-Sat: 11:00 AM - 9:00 PM</li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="text-white font-bold mb-3 uppercase text-xs tracking-wider">Safe & Secure Payments</h4>
+                <p class="text-xs text-gray-400 mb-3">We accept all local Pakistani payment options with COD verification.</p>
+                <div class="flex flex-wrap gap-2 text-xs font-bold">
+                    <span class="bg-gray-800 text-emerald-400 px-2 py-1 rounded border border-gray-700">Cash on Delivery</span>
+                    <span class="bg-red-900/60 text-red-300 px-2 py-1 rounded border border-red-800">JazzCash</span>
+                    <span class="bg-emerald-900/60 text-emerald-300 px-2 py-1 rounded border border-emerald-800">EasyPaisa</span>
+                    <span class="bg-blue-900/60 text-blue-300 px-2 py-1 rounded border border-blue-800">Raast</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="border-t border-gray-800 max-w-7xl mx-auto px-4 pt-6 text-center text-xs text-gray-500">
+            &copy; 2026 PAK Mobile Market PK. All rights reserved. Designed for Mobile Phone Buyers & Sellers in Pakistan.
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT APP LOGIC -->
+    <script>
+        // Sample Mobile & Tablet Product Database
+        const products = [
+            {
+                id: 1,
+                name: "iPhone 15 Pro Max",
+                brand: "Apple",
+                category: "Mobile",
+                price: 485000,
+                ptaStatus: "PTA Approved",
+                condition: "Brand New",
+                specs: "256GB Storage • Titanium Blue",
+                image: "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=400&auto=format&fit=crop&q=80"
+            },
+            {
+                id: 2,
+                name: "Samsung Galaxy S24 Ultra",
+                brand: "Samsung",
+                category: "Mobile",
+                price: 395000,
+                ptaStatus: "Official Warranty",
+                condition: "Brand New",
+                specs: "12GB RAM • 512GB Storage • S-Pen",
+                image: "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=400&auto=format&fit=crop&q=80"
+            },
+            {
+                id: 3,
+                name: "OPPO Reno 10 Pro 5G",
+                brand: "OPPO",
+                category: "Mobile",
+                price: 145000,
+                ptaStatus: "PTA Approved",
+                condition: "Refurbished",
+                specs: "12GB RAM • 256GB • Silvery Grey",
+                image: "https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=400&auto=format&fit=crop&q=80"
+            },
+            {
+                id: 4,
+                name: "Vivo V29 5G",
+                brand: "Vivo",
+                category: "Mobile",
+                price: 128000,
+                ptaStatus: "PTA Approved",
+                condition: "Used",
+                specs: "12GB RAM • 256GB • Aura Light",
+                image: "https://images.unsplash.com/photo-1565849904461-04a58ad377e0?w=400&auto=format&fit=crop&q=80"
+            },
+            {
+                id: 5,
+                name: "Apple iPad Air 5th Gen",
+                brand: "Apple",
+                category: "Tablet",
+                price: 185000,
+                ptaStatus: "Non-PTA",
+                condition: "Brand New",
+                specs: "M1 Chip • 64GB WiFi • Space Gray",
+                image: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400&auto=format&fit=crop&q=80"
+            },
+            {
+                id: 6,
+                name: "Samsung Galaxy Tab S9",
+                brand: "Samsung",
+                category: "Tablet",
+                price: 220000,
+                ptaStatus: "PTA Approved",
+                condition: "Brand New",
+                specs: "11-inch AMOLED • 128GB • S-Pen Box",
+                image: "https://images.unsplash.com/photo-1561154464-82e9adf32764?w=400&auto=format&fit=crop&q=80"
+            },
+            {
+                id: 7,
+                name: "Xiaomi 13T Pro",
+                brand: "Xiaomi",
+                category: "Mobile",
+                price: 165000,
+                ptaStatus: "Official Warranty",
+                condition: "Brand New",
+                specs: "12GB RAM • Leica Camera • 512GB",
+                image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&auto=format&fit=crop&q=80"
+            },
+            {
+                id: 8,
+                name: "iPhone 13",
+                brand: "Apple",
+                category: "Mobile",
+                price: 210000,
+                ptaStatus: "PTA Approved",
+                condition: "Used",
+                specs: "128GB • Battery 88% • Midnight Black",
+                image: "https://images.unsplash.com/photo-1632661674596-df8be070a5c5?w=400&auto=format&fit=crop&q=80"
+            }
+        ];
+
+        // Trade-In Device Database Matrix
+        const tradeInDatabase = {
+            "Apple": [
+                { model: "iPhone 15 Pro Max", baseVal: 380000 },
+                { model: "iPhone 14 Pro", baseVal: 270000 },
+                { model: "iPhone 13", baseVal: 160000 },
+                { model: "iPad Air 5th Gen", baseVal: 120000 }
+            ],
+            "Samsung": [
+                { model: "Galaxy S24 Ultra", baseVal: 310000 },
+                { model: "Galaxy S23 Ultra", baseVal: 220000 },
+                { model: "Galaxy A54 5G", baseVal: 75000 }
+            ],
+            "OPPO": [
+                { model: "OPPO Reno 10 Pro", baseVal: 100000 },
+                { model: "OPPO F23", baseVal: 55000 }
+            ],
+            "Vivo": [
+                { model: "Vivo V29", baseVal: 90000 },
+                { model: "Vivo Y36", baseVal: 40000 }
+            ],
+            "Xiaomi": [
+                { model: "Xiaomi 13T", baseVal: 110000 },
+                { model: "Redmi Note 12", baseVal: 38000 }
+            ]
+        };
+
+        // Application State
+        let cart = [];
+        let selectedBrand = 'all';
+        let selectedCategory = 'all';
+
+        // Initialize Web Page
+        window.onload = function() {
+            renderProducts(products);
+            updateCartUI();
+        };
+
+        // Render Product Grid
+        function renderProducts(items) {
+            const grid = document.getElementById('productGrid');
+            const noProducts = document.getElementById('noProducts');
+
+            grid.innerHTML = '';
+
+            if (items.length === 0) {
+                noProducts.classList.remove('hidden');
+                return;
+            } else {
+                noProducts.classList.add('hidden');
+            }
+
+            items.forEach(product => {
+                let ptaBadgeClass = 'badge-pta';
+                if(product.ptaStatus === 'Non-PTA') ptaBadgeClass = 'badge-non-pta';
+                if(product.ptaStatus === 'Official Warranty') ptaBadgeClass = 'badge-warranty';
+
+                const card = document.createElement('div');
+                card.className = "bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-xl transition duration-300 flex flex-col justify-between";
+                
+                card.innerHTML = `
+                    <div>
+                        <div class="relative bg-gray-100 h-48 overflow-hidden flex items-center justify-center p-4">
+                            <img src="${product.image}" alt="${product.name}" class="h-full object-contain hover:scale-105 transition duration-300" onerror="this.src='https://via.placeholder.com/300x300?text=PAK+Mobile'">
+                            <span class="absolute top-3 left-3 text-[11px] font-bold px-2.5 py-1 rounded-full ${ptaBadgeClass}">
+                                ${product.ptaStatus}
+                            </span>
+                            <span class="absolute top-3 right-3 text-[10px] font-bold bg-gray-900/80 text-white px-2 py-0.5 rounded">
+                                ${product.condition}
+                            </span>
+                        </div>
+                        <div class="p-4">
+                            <div class="text-xs font-bold text-gray-400 uppercase tracking-wider">${product.brand} • ${product.category}</div>
+                            <h3 class="font-extrabold text-gray-900 text-base mb-1 line-clamp-1">${product.name}</h3>
+                            <p class="text-xs text-gray-500 mb-3">${product.specs}</p>
+                            <div class="text-lg font-black text-pakGreen-800">
+                                Rs. ${product.price.toLocaleString()}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4 pt-0">
+                        <button onclick="addToCart(${product.id})" class="w-full bg-pakGreen-800 hover:bg-pakGreen-900 text-white font-bold py-2.5 rounded-xl shadow transition text-sm flex items-center justify-center space-x-2">
+                            <i class="fa-solid fa-cart-plus"></i>
+                            <span>Add to Cart</span>
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Search Handlers
+        function handleSearch() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = products.filter(p => p.name.toLowerCase().includes(query) || p.brand.toLowerCase().includes(query));
+            renderProducts(filtered);
+        }
+
+        function handleSearchMobile() {
+            const query = document.getElementById('searchInputMobile').value.toLowerCase();
+            const filtered = products.filter(p => p.name.toLowerCase().includes(query) || p.brand.toLowerCase().includes(query));
+            renderProducts(filtered);
+        }
+
+        // Filtering System
+        function filterByBrand(brand) {
+            selectedBrand = brand;
+            applyFilters();
+        }
+
+        function filterByCategory(cat) {
+            selectedCategory = cat;
+            applyFilters();
+        }
+
+        function applyFilters() {
+            let filtered = [...products];
+
+            // Filter Brand
+            if (selectedBrand !== 'all') {
+                filtered = filtered.filter(p => p.brand.toLowerCase() === selectedBrand.toLowerCase());
+            }
+
+            // Radio Category
+            const catRadio = document.querySelector('input[name="catFilter"]:checked').value;
+            if (catRadio !== 'all') {
+                filtered = filtered.filter(p => p.category === catRadio);
+            }
+
+            // Checkboxes PTA
+            const checkedPta = Array.from(document.querySelectorAll('.ptaFilter:checked')).map(cb => cb.value);
+            if (checkedPta.length > 0) {
+                filtered = filtered.filter(p => checkedPta.includes(p.ptaStatus));
+            }
+
+            // Checkboxes Condition
+            const checkedCond = Array.from(document.querySelectorAll('.condFilter:checked')).map(cb => cb.value);
+            if (checkedCond.length > 0) {
+                filtered = filtered.filter(p => checkedCond.includes(p.condition));
+            }
+
+            // Price Range Filter
+            const maxPrice = parseInt(document.getElementById('priceRange').value);
+            filtered = filtered.filter(p => p.price <= maxPrice);
+
+            // Sorting
+            const sortVal = document.getElementById('sortBy').value;
+            if (sortVal === 'low') {
+                filtered.sort((a, b) => a.price - b.price);
+            } else if (sortVal === 'high') {
+                filtered.sort((a, b) => b.price - a.price);
+            }
+
+            renderProducts(filtered);
+        }
+
+        function updatePriceLabel(val) {
+            document.getElementById('priceValue').innerText = parseInt(val).toLocaleString() + " PKR";
+        }
+
+        function resetFilters() {
+            selectedBrand = 'all';
+            selectedCategory = 'all';
+            document.getElementById('priceRange').value = 600000;
+            updatePriceLabel(600000);
+            document.querySelector('input[name="catFilter"][value="all"]').checked = true;
+            document.querySelectorAll('.ptaFilter').forEach(c => c.checked = false);
+            document.querySelectorAll('.condFilter').forEach(c => c.checked = false);
+            document.getElementById('sortBy').value = 'default';
+            renderProducts(products);
+        }
+
+        // Trade-In Valuation Calculator Logic
+        function updateModelOptions() {
+            const brand = document.getElementById('valBrand').value;
+            const modelSelect = document.getElementById('valModel');
+            modelSelect.innerHTML = '<option value="">-- Select Model --</option>';
+
+            if (brand && tradeInDatabase[brand]) {
+                tradeInDatabase[brand].forEach(item => {
+                    const opt = document.createElement('option');
+                    opt.value = item.model;
+                    opt.textContent = item.model;
+                    modelSelect.appendChild(opt);
+                });
+            }
+        }
+
+        function calculateValuation(e) {
+            e.preventDefault();
+            const brand = document.getElementById('valBrand').value;
+            const modelName = document.getElementById('valModel').value;
+            const condition = document.getElementById('valCondition').value;
+            const pta = document.getElementById('valPta').value;
+
+            if (!brand || !modelName) {
+                alert('Please select Brand and Model to calculate valuation.');
+                return;
+            }
+
+            const modelData = tradeInDatabase[brand].find(m => m.model === modelName);
+            let finalOffer = modelData ? modelData.baseVal : 50000;
+
+            // Condition Adjustments
+            if (condition === 'minor') finalOffer *= 0.85;
+            if (condition === 'cracked') finalOffer *= 0.60;
+
+            // PTA Adjustment
+            if (pta === 'non-pta') finalOffer *= 0.70;
+
+            // Accessories Bonus
+            if (document.getElementById('accBox').checked) finalOffer += 2000;
+            if (document.getElementById('accCharger').checked) finalOffer += 3000;
+            if (document.getElementById('accBill').checked) finalOffer += 3000;
+
+            document.getElementById('offerPrice').innerText = 'Rs. ' + Math.round(finalOffer).toLocaleString();
+            document.getElementById('valuationResult').classList.remove('hidden');
+        }
+
+        function submitSellQuote() {
+            alert('Your trade-in valuation quote has been submitted! Our team will contact you via phone/WhatsApp within 2 hours for doorstep pick-up.');
+        }
+
+        function scrollToSellSection() {
+            document.getElementById('sell-section').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Shopping Cart Drawer Functions
+        function addToCart(productId) {
+            const item = products.find(p => p.id === productId);
+            const existing = cart.find(c => c.id === productId);
+
+            if (existing) {
+                existing.qty++;
+            } else {
+                cart.push({ ...item, qty: 1 });
+            }
+
+            updateCartUI();
+            toggleCartDrawer(true);
+        }
+
+        function updateCartQty(id, delta) {
+            const item = cart.find(c => c.id === id);
+            if (item) {
+                item.qty += delta;
+                if (item.qty <= 0) {
+                    cart = cart.filter(c => c.id !== id);
+                }
+            }
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const countElem = document.getElementById('cartCount');
+            const container = document.getElementById('cartItemsContainer');
+            const subtotalElem = document.getElementById('cartSubtotal');
+            const totalElem = document.getElementById('cartTotal');
+            const checkoutBtn = document.getElementById('checkoutBtn');
+
+            const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+            countElem.innerText = totalItems;
+
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            subtotalElem.innerText = 'Rs. ' + subtotal.toLocaleString();
+            totalElem.innerText = 'Rs. ' + subtotal.toLocaleString();
+            document.getElementById('modalTotal').innerText = 'Rs. ' + subtotal.toLocaleString();
+
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 text-gray-400">
+                        <i class="fa-solid fa-cart-arrow-down text-4xl mb-3"></i>
+                        <p class="text-sm font-medium">Your cart is empty.</p>
+                    </div>
+                `;
+                checkoutBtn.disabled = true;
+            } else {
+                checkoutBtn.disabled = false;
+                container.innerHTML = cart.map(item => `
+                    <div class="py-4 flex items-center space-x-4">
+                        <img src="${item.image}" alt="${item.name}" class="w-14 h-14 object-contain rounded-lg bg-gray-50 border p-1">
+                        <div class="flex-1">
+                            <h4 class="font-bold text-xs text-gray-900">${item.name}</h4>
+                            <span class="text-[10px] text-gray-500 block">${item.ptaStatus}</span>
+                            <span class="text-xs font-black text-pakGreen-800">Rs. ${item.price.toLocaleString()}</span>
+                        </div>
+                        <div class="flex items-center border border-gray-300 rounded-lg">
+                            <button onclick="updateCartQty(${item.id}, -1)" class="px-2 py-0.5 text-gray-600 hover:bg-gray-100">-</button>
+                            <span class="px-2 text-xs font-bold">${item.qty}</span>
+                            <button onclick="updateCartQty(${item.id}, 1)" class="px-2 py-0.5 text-gray-600 hover:bg-gray-100">+</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function toggleCartDrawer(open) {
+            const drawer = document.getElementById('cartDrawer');
+            if (open) {
+                drawer.classList.remove('hidden');
+            } else {
+                drawer.classList.add('hidden');
+            }
+        }
+
+        // Checkout Modal & Order Processing
+        function openCheckoutModal() {
+            toggleCartDrawer(false);
+            document.getElementById('checkoutModal').classList.remove('hidden');
+        }
+
+        function closeCheckoutModal() {
+            document.getElementById('checkoutModal').classList.add('hidden');
+        }
+
+        function processOrder(e) {
+            e.preventDefault();
+            closeCheckoutModal();
+            
+            // Generate random PK order number
+            const randNum = Math.floor(1000 + Math.random() * 9000);
+            document.getElementById('orderIdText').innerText = '#PMM-' + randNum;
+            
+            // Show Success Modal
+            document.getElementById('successModal').classList.remove('hidden');
+
+            // Clear Cart
+            cart = [];
+            updateCartUI();
+        }
+
+        function closeSuccessModal() {
+            document.getElementById('successModal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
